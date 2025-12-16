@@ -28,14 +28,14 @@ class ListEntity(Collection, ABC, Generic[T]):
     def __iter__(self) -> Iterator[T]:
         return iter(self.data)
 
-    def __getitem__(self, item: int) -> T:
+    def __getitem__(self, item: int | slice) -> T:
         if isinstance(item, int):
             return self.data[item]
         if isinstance(item, slice):
             return self.__class__(self.data[item])
         raise TypeError
 
-    def __setitem__(self, key: int | slice, value: T):
+    def __setitem__(self, key: int | slice, value):
         if isinstance(key, int) or isinstance(key, slice):
             self.data[key] = value
         raise TypeError
@@ -80,11 +80,13 @@ class ListEntity(Collection, ABC, Generic[T]):
     @property
     def back(self) -> T:
         if self.is_empty():
-            raise EmptyCollectionException(self.back, self.__class__)
+            raise EmptyCollectionException(ListEntity.back, self.__class__)
         return self.data[-1]
 
     @back.setter
     def back(self, value: T) -> None:
+        if self.is_empty():
+            raise EmptyCollectionException(ListEntity.back, self.__class__)
         self.data[-1] = value
 
     def get_typed_list(self, needed: type) -> "ListEntity":

@@ -6,11 +6,11 @@ from src._collections.chip_collection import ChipCollection
 from src.common.config import logger
 from src.common.exceptions import NegativeArgumentException
 from src.objects.chip import Chip
-from src.objects.player import Player
-from src.objects.сasino import Casino
 from src.objects.goose import HonkGoose, Goose, WarGoose
+from src.objects.player import Player
+from src.objects.casino import Casino
 
-GOOSES_CLASSES = (Goose, HonkGoose, WarGoose)
+GOOSES_CLASSES = (HonkGoose, WarGoose)
 
 
 def generate_random_name(length: int) -> str:
@@ -27,9 +27,13 @@ def run_simulation(steps: int = 20, seed: int | None = None) -> None:
     for _ in range(n):
         chips = ChipCollection()
         for __ in range(random.randint(1, 10)):
-            chips.append(Chip(random.randint(1, 100)))
+            chips.append(Chip(random.randint(1, 1000)))
         casino.register_player(Player(generate_random_name(6), chips))
-        casino.register_goose(random.choice(GOOSES_CLASSES)(generate_random_name(6)))
+        goose_type = random.choice(GOOSES_CLASSES)
+        goose = goose_type(name=generate_random_name(6), honk_volume=random.randint(1, 100))
+        if isinstance(goose_type, WarGoose):
+            goose.damage = random.randint(1, 100)
+        casino.register_goose(goose)
     for step in range(steps):
         if len(casino.players) == 0:
             logger.info(f"Гуси победили за {step} шагов! Люди всё проиграли в казино")

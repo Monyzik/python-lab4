@@ -2,7 +2,7 @@ from typing import Callable
 
 
 class EmptyCollectionException(Exception):
-    def __init__(self, func: Callable, cls):
+    def __init__(self, func: Callable | property, cls):
         super().__init__(f"Невозможно применить функцию {func.__name__} в пустом {cls.__name__}")
 
 

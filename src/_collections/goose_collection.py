@@ -1,3 +1,4 @@
+from src.common.config import logger
 from src.models.list_entity import ListEntity
 from src.objects.goose import Goose, WarGoose
 
@@ -12,20 +13,22 @@ class GooseCollection(ListEntity[Goose]):
         raise TypeError
 
     def disco(self) -> None:
+        """
+        Запускает диско гусей, они веселятся и издают разные звуки.
+        :return: Ничего не возвращает.
+        """
         for goose in self:
             goose()
             goose.honk()
 
-    def evolution(self):
+    def evolution(self, power: int = 1) -> None:
+        """
+        Добавляет каждому гусю по power громкости, если это WarGoose, то также добавляет power единицу урона
+        :param power: Значение, на которое эволюционируют гуси, по умолчанию 1
+        :return: Ничего не возвращает
+        """
+        logger.info("Эволюция гусей началась, все гуси стали сильнее и громче")
         for goose in self:
             if isinstance(goose, WarGoose):
-                goose.damage += 1
-            goose.honk_volume += 1
-
-# gooses = GooseCollection([Goose("Петя"), Goose("Самир", honk_volume=100)])
-# gooses.disco()
-# print(gooses)
-# # gooses.append(Player('abacaba'))
-# gooses.evolution()
-# del gooses[:2]
-# print(gooses)
+                goose.damage += power
+            goose.honk_volume += power

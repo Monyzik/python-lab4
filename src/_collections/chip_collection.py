@@ -46,16 +46,10 @@ class ChipCollection(ListEntity[Chip]):
 
     @property
     def count(self) -> int:
+        """
+        :return: Возвращает сумму фишек.
+        """
         result = 0
         for chip in self:
             result += chip.count
         return result
-
-    def trade_to_one_chip(self) -> "ChipCollection":
-        one_chip = Chip(self.count)
-        self.clear()
-        self.append(one_chip)
-        return self
-
-
-print(ChipCollection([Chip(0), Chip(2), Chip(4)]) == ChipCollection([Chip(0), Chip(2), Chip(4)]))
