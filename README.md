@@ -1,5 +1,3 @@
-from src.models.game_entity import GameEntity
-
 ## Лабораторная работа №4 (Казино)
 
 В лабораторной работе реализован простой CLI интерфейс,
@@ -12,10 +10,13 @@ python -m src.main
 После чего надо ввести количество шагов (положительное число),
 а также сид (либо None при его отсутствии)
 
-### Архитектура:
+**Все логи сохраняются в файл ```.log```, который будет находиться в корневой папке проекта,
+а также выводятся в консоль**
+
+### Архитектура проекта:
+
 ```
-.
-├── collections
+├── containers
 │   ├── casino_balance.py
 │   ├── chip_collection.py
 │   ├── goose_collection.py
@@ -38,11 +39,13 @@ python -m src.main
 └── simulation.py
 ```
 
-### Описание:
+---
+
+### Описание
 
 #### Реализованные сущности:
 
-##### Гуси:
+#### Гуси:
 
 В качестве сущностей реализованны гуси, ниже приведены основной функционал:
 
@@ -72,8 +75,7 @@ class WarGoose(Goose):
 
 ```python
 class HonkGoose(Goose):
-    def superpower(self, players: PlayerCollection, casino_balances: CasinoBalances,
-                   unregister_func: Callable) -> None:
+    def superpower(self, players: PlayerCollection, casino_balances: CasinoBalances, unregister_func: Callable) -> None:
         ...
 ```
 
@@ -91,14 +93,15 @@ class GooseCollection(ListEntity[Goose]):
         ...
 
 ```
-
-##### Игроки:
+---
+#### Игроки:
 
 Реализованы игроки, которые умеют крутить рулетку:
 
 ```python
 class Player(GameEntity):
-    def spin(self, bet: int | Chip, casino_balances: CasinoBalances, unregister_func: Callable) -> None: ...
+    def spin(self, bet: int | Chip, casino_balances: CasinoBalances, unregister_func: Callable) -> None:
+        ...
 ```
 
 Реализованна коллекция игроков,
@@ -115,10 +118,20 @@ class PlayerCollection(ListEntity[Player]):
         ...
 ```
 
+---
+
 ##### Фишки:
 
 Реализованны фишки, а также их коллекция, с ними можно производить различные операции:
 вычитать, складывать, сравнивать.
 
-Сущности в казино имеют свой баланс, то есть ChipCollection
+Гуси и игроки в казино имеют свой баланс, который является классом ChipCollection.
 
+---
+##### Казино:
+
+Сам класс казино объединяет в себе гусей, игроков, а также содержит их балансы. Он объединяет все методы сущностей и
+взаимодействие между ними.
+
+Каждый шаг выбираются возможные действия и выполняется одно из них, обновляя все необходимые значения балансов и при
+необходимости удаляя обанкротившиеся игроков.
