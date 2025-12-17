@@ -14,7 +14,7 @@ class Goose(GameEntity):
         super().__init__(name, balance)
         self.honk_volume = honk_volume
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs) -> None:
         logger.info("ГА" * (self.honk_volume // 5))
 
     def honk(self) -> None:
@@ -27,7 +27,7 @@ class Goose(GameEntity):
             s = s.upper()
         logger.info(s)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.name}, honk_volume={self.honk_volume}, balance={self.balance.data})"
 
 
@@ -36,13 +36,13 @@ class WarGoose(Goose):
         super().__init__(name, balance, honk_volume)
         self.damage = damage
 
-    def attack(self, player: Player, casino_balances: CasinoBalances, unregister_func: Callable):
+    def attack(self, player: Player, casino_balances: CasinoBalances, unregister_func: Callable) -> None:
         """
         Гусь атакует игрока
         :param player: Игрок, которого атакует гусь
-        :param unregister_func:
-        :param casino_balances:
-        :return:
+        :param casino_balances: Балансы всех игроков в казино.
+        :param unregister_func: Функция, которая удаляет игрока, если он обанкротился.
+        :return: Ничего не возвращает
         """
         logger.info(f"Гусь {self.name} атаковал {player.name}")
         try:
@@ -53,21 +53,27 @@ class WarGoose(Goose):
         self.balance += self.damage
         casino_balances[self.full_name] += self.damage
 
-    def steal_chip(self, player: Player, index: int):
+    def steal_chip(self, player: Player, index: int) -> None:
+        """
+        Крадет одну фишку index у игрока.
+        :param player: Игрок, у которого будет украдена фишка.
+        :param index: Индекс фишки, которая будет украдена.
+        :return: Ничего не возвращает.
+        """
         logger.info(f"Гусь {self.name} атаковал {player.name}")
         chip = player.balance.pop(index)
         self.balance += chip
 
 
 class HonkGoose(Goose):
-    def __init__(self, name: str, balance: ChipCollection = None, honk_volume: int = 10):
+    def __init__(self, name: str, balance: ChipCollection = None, honk_volume: int = 10) -> None:
         super().__init__(name, balance, honk_volume)
 
     @override
     def honk(self) -> None:
         logger.info(f"Я есть очень громкий гусь {self.name}")
 
-    def superpower(self, players: PlayerCollection, casino_balances: CasinoBalances, unregister_func: Callable):
+    def superpower(self, players: PlayerCollection, casino_balances: CasinoBalances, unregister_func: Callable) -> None:
         """
         Применяет суперспособность громкого гуся, забирая у каждого игрока honk_volume фишек.
         :param players: Список игроков, на которых действует суперспособность.

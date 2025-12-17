@@ -31,6 +31,9 @@ class GameEntity(ABC):
 
     @property
     def full_name(self):
+        """
+        :return: Возвращает полное имя класса, вида: '{class} {name}'.
+        """
         return self.__class__.__name__ + ' ' + self.name
 
     @abstractmethod

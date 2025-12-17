@@ -24,8 +24,12 @@ def test_chip_collection():
     lst += ChipCollection([Chip(10)])
     assert lst.back == 10
     assert lst[-2:] == ChipCollection([Chip(20), Chip(10)])
-    # lst[:2] = [Chip(10), Chip(20)]
-    # assert lst[1] == Chip(10)
+    lst[0:2] = ChipCollection([Chip(50), Chip(20)])
+    assert lst[1] == Chip(20)
+    assert lst[0] == Chip(50)
+    assert Chip(50) in lst
+    lst.clear()
+    assert lst.is_empty()
 
 
 def test_ch_bad_type_exception():
